@@ -48,21 +48,23 @@ def alphabeta(game, alpha=-float('inf'), beta=float('inf')):
         return pow(-1, game.result.player) * game.result.points
 
     if game.turn % 2:
-        value = float('inf')
+        best_value = float('inf')
         for _, new_game in make_moves(game):
-            value = min(value, alphabeta(new_game, alpha, beta))
-            beta = min(beta, value)
+            value = alphabeta(new_game, alpha, beta)
+            best_value = min(best_value, value)
+            beta = min(beta, best_value)
             if beta <= alpha:
                 break
-        return value
+        return best_value
     else:
-        value = -float('inf')
+        best_value = -float('inf')
         for _, new_game in make_moves(game):
-            value = max(value, alphabeta(new_game, alpha, beta))
-            alpha = max(alpha, value)
+            value = alphabeta(new_game, alpha, beta)
+            best_value = max(best_value, value)
+            alpha = max(alpha, best_value)
             if beta <= alpha:
                 break
-        return value
+        return best_value
 
 # initializing random game
 game = dominoes.Game.new()
