@@ -43,26 +43,26 @@ def minimax(game):
             best_moves.insert(0, move)
     return best_moves, best_value
 
-def alphabeta(game, alpha=-float('inf'), beta=float('inf')):
+def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
     if game.result is not None:
         return pow(-1, game.result.player) * game.result.points
 
     if game.turn % 2:
         best_value = float('inf')
         for _, new_game in make_moves(game):
-            value = alphabeta(new_game, alpha, beta)
+            value = alphabeta(new_game, alpha_beta)
             best_value = min(best_value, value)
-            beta = min(beta, best_value)
-            if beta <= alpha:
+            alpha_beta = (alpha_beta[0], min(alpha_beta[1], best_value))
+            if alpha_beta[1] <= alpha_beta[0]:
                 break
         return best_value
     else:
         best_value = -float('inf')
         for _, new_game in make_moves(game):
-            value = alphabeta(new_game, alpha, beta)
+            value = alphabeta(new_game, alpha_beta)
             best_value = max(best_value, value)
-            alpha = max(alpha, best_value)
-            if beta <= alpha:
+            alpha_beta = (max(alpha_beta[0], best_value), alpha_beta[1])
+            if alpha_beta[1] <= alpha_beta[0]:
                 break
         return best_value
 
