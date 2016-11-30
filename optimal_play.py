@@ -34,7 +34,6 @@ def minimax(game):
         best_value = -float('inf')
         op = operator.gt
 
-    best_moves = None
     for move, new_game in make_moves(game):
         moves, value = minimax(new_game)
         if op(value, best_value):
@@ -45,7 +44,7 @@ def minimax(game):
 
 def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
     if game.result is not None:
-        return pow(-1, game.result.player) * game.result.points
+        return [], pow(-1, game.result.player) * game.result.points
 
     if game.turn % 2:
         best_value = float('inf')
@@ -56,14 +55,16 @@ def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
         op = operator.gt
         update = lambda ab, v: (max(ab[0], v), ab[1])
 
-    for _, new_game in make_moves(game):
-        value = alphabeta(new_game, alpha_beta)
+    for move, new_game in make_moves(game):
+        moves, value = alphabeta(new_game, alpha_beta)
         if op(value, best_value):
             best_value = value
+            best_moves = moves
+            best_moves.insert(0, move)
             alpha_beta = update(alpha_beta, best_value)
             if alpha_beta[1] <= alpha_beta[0]:
                 break
-    return best_value
+    return best_moves, best_value
 
 # initializing random game
 game = dominoes.Game.new()
