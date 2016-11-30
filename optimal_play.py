@@ -49,22 +49,20 @@ def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
 
     if game.turn % 2:
         best_value = float('inf')
-        for _, new_game in make_moves(game):
-            value = alphabeta(new_game, alpha_beta)
-            best_value = min(best_value, value)
-            alpha_beta = (alpha_beta[0], min(alpha_beta[1], best_value))
-            if alpha_beta[1] <= alpha_beta[0]:
-                break
-        return best_value
+        op = min
+        update = lambda ab, v: (ab[0], op(ab[1], v))
     else:
         best_value = -float('inf')
-        for _, new_game in make_moves(game):
-            value = alphabeta(new_game, alpha_beta)
-            best_value = max(best_value, value)
-            alpha_beta = (max(alpha_beta[0], best_value), alpha_beta[1])
-            if alpha_beta[1] <= alpha_beta[0]:
-                break
-        return best_value
+        op = max
+        update = lambda ab, v: (op(ab[0], v), ab[1])
+
+    for _, new_game in make_moves(game):
+        value = alphabeta(new_game, alpha_beta)
+        best_value = op(best_value, value)
+        alpha_beta = update(alpha_beta, best_value)
+        if alpha_beta[1] <= alpha_beta[0]:
+            break
+    return best_value
 
 # initializing random game
 game = dominoes.Game.new()
