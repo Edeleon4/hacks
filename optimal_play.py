@@ -11,7 +11,7 @@ def timer(action):
     start = time.time()
     yield
     elapsed = time.time() - start
-    print(action, 'took', int(elapsed), 'seconds')
+    print(action, 'took', elapsed, 'seconds')
 
 def make_moves(game):
     for move in game.valid_moves[:-1]:
