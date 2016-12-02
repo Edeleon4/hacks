@@ -2,7 +2,9 @@ import copy
 import dominoes
 import lib
 
-FIXED_MOVES = 6
+FIXED_MOVES = 5
+
+print('FIXED_MOVES:', FIXED_MOVES)
 
 # initializing random game
 game = dominoes.Game.new()
