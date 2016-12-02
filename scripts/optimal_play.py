@@ -13,15 +13,15 @@ game = dominoes.Game.new()
 for _ in range(FIXED_MOVES):
     game.make_move(*game.valid_moves[0])
 
-def run(game, function):
-    game_copy = copy.deepcopy(game)
-    game_copy.skinny_board()
-    print(function(game_copy))
+# switch to SkinnyBoard representation
+game.skinny_board()
 
 # run minimax
-with lib.utils.timer('minimax'):
-    run(game, lib.search.minimax)
+with lib.utils.timer() as t_minimax:
+    _, score = lib.search.minimax(copy.deepcopy(game))
+print('minimax took', t_minimax.elapsed, 'seconds and produced a score of', score)
 
 # run alphabeta
-with lib.utils.timer('alphabeta'):
-    run(game, lib.search.alphabeta)
+with lib.utils.timer() as t_alphabeta:
+    _, score = lib.search.alphabeta(copy.deepcopy(game))
+print('alphabeta took', t_alphabeta.elapsed, 'seconds and produced a score of', score)
