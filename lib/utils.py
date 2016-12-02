@@ -1,9 +1,12 @@
 import contextlib
 import time
 
+class Timer:
+    pass
+
 @contextlib.contextmanager
-def timer(action):
+def timer():
+    t = Timer()
     start = time.time()
-    yield
-    elapsed = time.time() - start
-    print(action, 'took', elapsed, 'seconds')
+    yield t
+    t.elapsed = time.time() - start
