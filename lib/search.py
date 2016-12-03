@@ -69,14 +69,15 @@ def node_minimax(node):
         key=lambda moves_value: moves_value[1]
     )
 
-def parallel_minimax(game, serial_depth, num_processes=None, chunk_size=1):
+def naive_parallel_search(search_f, game, serial_depth, num_processes, chunk_size):
     # first, BFS from the root game to a certain depth
     root = Node(game, [])
     nodes = node_bfs(root, serial_depth)
 
-    # then, run minimax, in parallel, on all the games in the BFS frontier
+    # then, run the search function, in parallel,
+    # on all the games in the BFS frontier.
     with multiprocessing.Pool(num_processes) as pool:
-        imap = pool.imap(minimax, (n.game for n in nodes), chunk_size)
+        imap = pool.imap(search_f, (n.game for n in nodes), chunk_size)
         for node, (best_moves, best_value) in zip(nodes, imap):
             node.game = None
             node.child_moves = best_moves
@@ -84,6 +85,13 @@ def parallel_minimax(game, serial_depth, num_processes=None, chunk_size=1):
 
     # finally, run serial minimax from the root to the BFS frontier
     return node_minimax(root)
+
+def parallel_minimax(game, serial_depth, num_processes=None, chunk_size=1):
+    return naive_parallel_search(
+        minimax, game, serial_depth,
+        num_processes=num_processes,
+        chunk_size=chunk_size
+    )
 
 def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
     if game.result is not None:
