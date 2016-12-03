@@ -116,3 +116,10 @@ def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
             if alpha_beta[1] <= alpha_beta[0]:
                 break
     return best_moves, best_value
+
+def parallel_alphabeta(game, serial_depth, num_processes=None, chunk_size=1):
+    return naive_parallel_search(
+        alphabeta, game, serial_depth,
+        num_processes=num_processes,
+        chunk_size=chunk_size
+    )
