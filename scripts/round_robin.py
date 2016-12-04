@@ -1,19 +1,24 @@
 import dominoes
+import itertools
 import lib.players
 
-STARTS_PER_PLAYER = 250
+STARTS_PER_PLAYER = 1000
 
-team0 = (
+PLAYERS = (
     lib.players.random,
-    lib.players.random
+    lib.players.bota_gorda
 )
-team1 = (
-    lib.players.random,
-    lib.players.random
-)
+
+TEAMS = tuple(itertools.combinations_with_replacement(PLAYERS, 2))
+
+PAIRINGS = tuple(itertools.combinations(TEAMS, 2))
 
 # print config info
 print('STARTS_PER_PLAYER:', STARTS_PER_PLAYER)
+print('PLAYERS:')
+for player in PLAYERS:
+    print('    {}'.format(player.__name__))
+print()
 
 def play(team0, team1, starts_per_player):
     # set playing order
@@ -24,9 +29,9 @@ def play(team0, team1, starts_per_player):
         team1[1]
     )
 
-    # print config info
-    for p in range(len(players)):
-        print('Player {}:'.format(p), players[p].__name__)
+    # print teams
+    print('Team 0:', [players[0].__name__, players[2].__name__])
+    print('Team 1:', [players[1].__name__, players[3].__name__])
 
     # to keep track of how many times each team wins
     wins = [0, 0]
@@ -58,4 +63,6 @@ def play(team0, team1, starts_per_player):
     print('Wins:', wins)
     print('Points:', points)
 
-play(team0, team1, STARTS_PER_PLAYER)
+for team0, team1 in PAIRINGS:
+    play(team0, team1, STARTS_PER_PLAYER)
+    print()
