@@ -2,7 +2,7 @@ import dominoes
 import itertools
 import lib.players
 
-STARTS_PER_PLAYER = 1000
+STARTS_PER_PLAYER = 5000
 
 PLAYERS = (
     lib.players.random,
@@ -10,7 +10,7 @@ PLAYERS = (
 )
 
 INITIAL_ELO = 1500
-K_FACTOR = .1
+K_FACTOR = 16
 MAGNIFICATION_INTERVAL = 400
 MAGNIFICATION_FACTOR = 10
 
@@ -46,7 +46,7 @@ def update_elo(elo0, elo1, actual_outcome0, actual_outcome1):
 
     return updated_elo0, updated_elo1
 
-def play(team0, team1, starts_per_player):
+def play_game(team0, team1, starting_player):
     # set playing order
     players = (
         team0[0],
@@ -55,51 +55,31 @@ def play(team0, team1, starts_per_player):
         team1[1]
     )
 
-    # to keep track of how many times each team wins
-    wins = [0, 0]
+    game = dominoes.Game.new(starting_player=starting_player)
+    while game.result is None:
+        game.make_move(*players[game.turn](game)[0])
 
-    # to keep track of how many points each team scores
-    points = [0, 0]
+    if not game.result.points:
+        # tie
+        return [.5, .5]
+    else:
+        # win/loss
+        winning_team_offset = int(game.result.points < 0)
+        winning_team = (game.result.player + winning_team_offset) % 2
 
-    for p in range(len(players)):
-        for _ in range(starts_per_player):
-            game = dominoes.Game.new(starting_player=p)
-            while game.result is None:
-                game.make_move(*players[game.turn](game)[0])
+        outcome = [0, 0]
+        outcome[winning_team] = 1
 
-            if not game.result.points:
-                # tie
-                wins[0] += .5
-                wins[1] += .5
-            else:
-                # compute winning team and points won
-                winning_team = game.result.player % 2
-                pts = game.result.points
-                if pts < 0:
-                    winning_team = (winning_team + 1) % 2
-                    pts = -pts
+        return outcome
 
-                # record the result
-                wins[winning_team] += 1
-                points[winning_team] += pts
+for _ in range(STARTS_PER_PLAYER):
+    for starting_player in range(4):
+        for team0, team1 in PAIRINGS:
+            # play game
+            score0, score1 = play_game(team0, team1, starting_player)
 
-    return wins, points
-
-for team0, team1 in PAIRINGS:
-    # print teams
-    print('Team 0:', [team0[0].__name__, team0[1].__name__])
-    print('Team 1:', [team1[0].__name__, team1[1].__name__])
-
-    # play
-    wins, points = play(team0, team1, STARTS_PER_PLAYER)
-
-    # print outcome
-    print('Wins:', wins)
-    print('Points:', points)
-    print()
-
-    # update_elo
-    ELO[team0], ELO[team1] = update_elo(ELO[team0], ELO[team1], wins[0], wins[1])
+            # update_elo
+            ELO[team0], ELO[team1] = update_elo(ELO[team0], ELO[team1], score0, score1)
 
 print('Elo ratings:')
 for (player0, player1), elo in sorted(ELO.items(), key=lambda team_elo: -team_elo[1]):
