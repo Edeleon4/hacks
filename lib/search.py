@@ -2,13 +2,14 @@ import copy
 import multiprocessing
 import operator
 
-def make_moves(game):
-    for move in game.valid_moves[:-1]:
+def make_moves(game, key=None):
+    sorted_moves = sorted(game.valid_moves, key=key)
+    for move in sorted_moves[:-1]:
         new_game = copy.deepcopy(game)
         new_game.make_move(*move)
         yield move, new_game
 
-    move = game.valid_moves[-1]
+    move = sorted_moves[-1]
     game.make_move(*move)
     yield move, game
 
@@ -93,7 +94,7 @@ def parallel_minimax(game, serial_depth, num_processes=None, chunk_size=1):
         chunk_size=chunk_size
     )
 
-def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
+def alphabeta(game, alpha_beta=(-float('inf'), float('inf')), key=None):
     if game.result is not None:
         return [], pow(-1, game.result.player) * game.result.points
 
@@ -106,8 +107,8 @@ def alphabeta(game, alpha_beta=(-float('inf'), float('inf'))):
         op = operator.gt
         update = lambda ab, v: (max(ab[0], v), ab[1])
 
-    for move, new_game in make_moves(game):
-        moves, value = alphabeta(new_game, alpha_beta)
+    for move, new_game in make_moves(game, key):
+        moves, value = alphabeta(new_game, alpha_beta, key)
         if op(value, best_value):
             best_value = value
             best_moves = moves
