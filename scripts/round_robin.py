@@ -47,18 +47,19 @@ def play(team0, team1, starts_per_player):
 
             if not game.result.points:
                 # tie
-                continue
+                wins[0] += .5
+                wins[1] += .5
+            else:
+                # compute winning team and points won
+                winning_team = game.result.player % 2
+                pts = game.result.points
+                if pts < 0:
+                    winning_team = (winning_team + 1) % 2
+                    pts = -pts
 
-            # compute winning team and points won
-            winning_team = game.result.player % 2
-            pts = game.result.points
-            if pts < 0:
-                winning_team = (winning_team + 1) % 2
-                pts = -pts
-
-            # record the result
-            wins[winning_team] += 1
-            points[winning_team] += pts
+                # record the result
+                wins[winning_team] += 1
+                points[winning_team] += pts
 
     return wins, points
 
