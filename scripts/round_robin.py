@@ -3,7 +3,7 @@ import itertools
 import lib.players
 import tqdm
 
-STARTS_PER_PLAYER = 1000
+STARTS_PER_PLAYER = 100
 
 PLAYERS = (
     lib.players.random,
@@ -21,6 +21,8 @@ TEAMS = tuple(itertools.combinations_with_replacement(PLAYERS, 2))
 ELO = {team: INITIAL_ELO for team in TEAMS}
 
 PAIRINGS = tuple(itertools.combinations(TEAMS, 2))
+
+RECORDS = {pairing: [0, 0] for pairing in PAIRINGS}
 
 # print config info
 print('STARTS_PER_PLAYER:', STARTS_PER_PLAYER)
@@ -80,8 +82,16 @@ for _ in tqdm.trange(STARTS_PER_PLAYER, leave=False):
             # play game
             score0, score1 = play_game(team0, team1, starting_player)
 
+            # update records
+            RECORDS[(team0, team1)][0] += score0
+            RECORDS[(team0, team1)][1] += score1
+
             # update_elo
             ELO[team0], ELO[team1] = update_elo(ELO[team0], ELO[team1], score0, score1)
+
+print('Records:')
+for ((player0, player2), (player1, player3)), record in sorted(RECORDS.items(), key=lambda pairing_record: pairing_record[1][1]):
+    print('   ({}, {}) vs ({}, {}): {}'.format(player0.__name__, player2.__name__, player1.__name__, player3.__name__, record))
 
 print('Elo ratings:')
 for (player0, player1), elo in sorted(ELO.items(), key=lambda team_elo: -team_elo[1]):
