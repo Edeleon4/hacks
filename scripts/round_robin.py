@@ -1,6 +1,7 @@
 import dominoes
 import itertools
 import lib.players
+import tqdm
 
 STARTS_PER_PLAYER = 1000
 
@@ -73,7 +74,7 @@ def play_game(team0, team1, starting_player):
 
         return outcome
 
-for _ in range(STARTS_PER_PLAYER):
+for _ in tqdm.trange(STARTS_PER_PLAYER, leave=False):
     for starting_player in range(4):
         for team0, team1 in PAIRINGS:
             # play game
