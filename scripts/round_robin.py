@@ -15,7 +15,7 @@ team1 = (
 # print config info
 print('STARTS_PER_PLAYER:', STARTS_PER_PLAYER)
 
-def play(team0, team1):
+def play(team0, team1, starts_per_player):
     # set playing order
     players = (
         team0[0],
@@ -35,7 +35,7 @@ def play(team0, team1):
     points = [0, 0]
 
     for p in range(len(players)):
-        for _ in range(STARTS_PER_PLAYER):
+        for _ in range(starts_per_player):
             game = dominoes.Game.new(starting_player=p)
             while game.result is None:
                 game.make_move(*players[game.turn](game)[0])
@@ -58,4 +58,4 @@ def play(team0, team1):
     print('Wins:', wins)
     print('Points:', points)
 
-play(team0, team1)
+play(team0, team1, STARTS_PER_PLAYER)
