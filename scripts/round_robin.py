@@ -9,7 +9,11 @@ PLAYERS = (
     lib.players.bota_gorda
 )
 
+INITIAL_ELO = 1500
+
 TEAMS = tuple(itertools.combinations_with_replacement(PLAYERS, 2))
+
+ELO = {team: INITIAL_ELO for team in TEAMS}
 
 PAIRINGS = tuple(itertools.combinations(TEAMS, 2))
 
@@ -70,3 +74,6 @@ for team0, team1 in PAIRINGS:
     print('Wins:', wins)
     print('Points:', points)
     print()
+
+for (player0, player1), elo in ELO.items():
+    print('{}: {}'.format((player0.__name__, player1.__name__), elo))
