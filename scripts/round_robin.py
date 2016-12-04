@@ -29,10 +29,6 @@ def play(team0, team1, starts_per_player):
         team1[1]
     )
 
-    # print teams
-    print('Team 0:', [players[0].__name__, players[2].__name__])
-    print('Team 1:', [players[1].__name__, players[3].__name__])
-
     # to keep track of how many times each team wins
     wins = [0, 0]
 
@@ -60,9 +56,17 @@ def play(team0, team1, starts_per_player):
             wins[winning_team] += 1
             points[winning_team] += pts
 
-    print('Wins:', wins)
-    print('Points:', points)
+    return wins, points
 
 for team0, team1 in PAIRINGS:
-    play(team0, team1, STARTS_PER_PLAYER)
+    # print teams
+    print('Team 0:', [team0[0].__name__, team0[1].__name__])
+    print('Team 1:', [team1[0].__name__, team1[1].__name__])
+
+    # play
+    wins, points = play(team0, team1, STARTS_PER_PLAYER)
+
+    # print outcome
+    print('Wins:', wins)
+    print('Points:', points)
     print()
