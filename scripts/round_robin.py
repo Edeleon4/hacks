@@ -2,10 +2,11 @@ import dominoes
 import itertools
 import lib.players
 
-STARTS_PER_PLAYER = 5000
+STARTS_PER_PLAYER = 1000
 
 PLAYERS = (
     lib.players.random,
+    lib.players.bota_flaca,
     lib.players.bota_gorda
 )
 
