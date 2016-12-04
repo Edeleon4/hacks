@@ -42,6 +42,13 @@ with lib.utils.timer() as t_parallel_alphabeta:
 print('parallel alphabeta took', t_parallel_alphabeta.elapsed, 'seconds and produced a score of', score, 'with moves:')
 print(moves)
 
+# run double-sorted alphabeta
+with lib.utils.timer() as t_double_sorted_alphabeta:
+    moves, score = lib.search.alphabeta(copy.deepcopy(game), key=lambda m: m[0].first != m[0].second)
+print('double-sorted alphabeta took', t_double_sorted_alphabeta.elapsed, 'seconds and produced a score of', score, 'with moves:')
+print(moves)
+
 print('parallel minimax / minimax:', t_parallel_minimax.elapsed / t_minimax.elapsed)
 print('alphabeta / parallel minimax:', t_alphabeta.elapsed / t_parallel_minimax.elapsed)
 print('parallel alphabeta / alphabeta:', t_parallel_alphabeta.elapsed / t_alphabeta.elapsed)
+print('double-sorted alphabeta / alphabeta:', t_double_sorted_alphabeta.elapsed / t_alphabeta.elapsed)
