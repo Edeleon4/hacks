@@ -18,6 +18,9 @@ for _ in range(FIXED_MOVES):
 # switch to SkinnyBoard representation
 game.skinny_board()
 
+# starting player, after playing moves at random
+print('Starting player:', game.turn)
+
 # run minimax
 with lib.utils.timer() as t_minimax:
     moves, score = lib.search.minimax(copy.deepcopy(game))
