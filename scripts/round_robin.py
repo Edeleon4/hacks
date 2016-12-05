@@ -3,7 +3,7 @@ import itertools
 import lib.players
 import tqdm
 
-STARTS_PER_PLAYER = 100
+STARTS_PER_PLAYER = 1000
 
 PLAYERS = (
     lib.players.random,
@@ -16,7 +16,8 @@ K_FACTOR = 16
 MAGNIFICATION_INTERVAL = 400
 MAGNIFICATION_FACTOR = 10
 
-TEAMS = tuple(itertools.combinations_with_replacement(PLAYERS, 2))
+#TEAMS = tuple(itertools.combinations_with_replacement(PLAYERS, 2))
+TEAMS = tuple((player, player) for player in PLAYERS)
 
 ELO = {team: INITIAL_ELO for team in TEAMS}
 
