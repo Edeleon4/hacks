@@ -31,6 +31,10 @@ print('PLAYERS:')
 for player in PLAYERS:
     print('    {}'.format(player.__name__))
 print()
+print('TEAMS:')
+for (player0, player1) in TEAMS:
+    print('    ({}, {})'.format(player0.__name__, player1.__name__))
+print()
 
 def update_elo(elo0, elo1, actual_outcome0, actual_outcome1):
     relative_elo0 = pow(MAGNIFICATION_FACTOR, elo0 / MAGNIFICATION_INTERVAL)
