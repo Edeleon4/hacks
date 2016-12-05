@@ -14,3 +14,7 @@ def double(game):
 
 def not_double(game):
     game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first == m[0].second))
+
+def double_bota_gorda(game):
+    bota_gorda(game)
+    double(game)

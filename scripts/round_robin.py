@@ -10,7 +10,8 @@ PLAYERS = (
     lib.players.bota_flaca,
     lib.players.bota_gorda,
     lib.players.double,
-    lib.players.not_double
+    lib.players.not_double,
+    lib.players.double_bota_gorda
 )
 
 INITIAL_ELO = 1500
