@@ -1,18 +1,16 @@
 import random as rand
 
 def random(game):
-    moves = list(game.valid_moves)
-    rand.shuffle(moves)
-    return moves
+    game.valid_moves = tuple(sorted(game.valid_moves, key=lambda _: rand.random()))
 
 def bota_flaca(game):
-    return sorted(game.valid_moves, key=lambda m: m[0].first + m[0].second)
+    game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first + m[0].second))
 
 def bota_gorda(game):
-    return list(reversed(bota_flaca(game)))
+    game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -m[0].first - m[0].second))
 
 def double(game):
-    return sorted(game.valid_moves, key=lambda m: m[0].first != m[0].second)
+    game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first != m[0].second))
 
 def not_double(game):
-    return list(reversed(double(game)))
+    game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first == m[0].second))

@@ -68,7 +68,8 @@ def play_game(team0, team1, starting_player):
 
     game = dominoes.Game.new(starting_player=starting_player)
     while game.result is None:
-        game.make_move(*players[game.turn](game)[0])
+        players[game.turn](game)
+        game.make_move(*game.valid_moves[0])
 
     if not game.result.points:
         # tie
