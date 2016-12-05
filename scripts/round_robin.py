@@ -15,9 +15,6 @@ PLAYERS = (
 )
 
 INITIAL_ELO = 1500
-K_FACTOR = 16
-MAGNIFICATION_INTERVAL = 400
-MAGNIFICATION_FACTOR = 10
 
 #TEAMS = tuple(itertools.combinations_with_replacement(PLAYERS, 2))
 TEAMS = tuple((player, player) for player in PLAYERS)
@@ -39,9 +36,10 @@ for (player0, player1) in TEAMS:
     print('    ({}, {})'.format(player0.__name__, player1.__name__))
 print()
 
-def update_elo(elo0, elo1, actual_outcome0, actual_outcome1):
-    relative_elo0 = pow(MAGNIFICATION_FACTOR, elo0 / MAGNIFICATION_INTERVAL)
-    relative_elo1 = pow(MAGNIFICATION_FACTOR, elo1 / MAGNIFICATION_INTERVAL)
+def update_elo(elo0, elo1, actual_outcome0, actual_outcome1,
+               k_factor=16, magnification_interval=400, magnification_factor=10):
+    relative_elo0 = pow(magnification_factor, elo0 / magnification_interval)
+    relative_elo1 = pow(magnification_factor, elo1 / magnification_interval)
 
     elo_normalization_constant = relative_elo0 + relative_elo1
 
@@ -53,8 +51,8 @@ def update_elo(elo0, elo1, actual_outcome0, actual_outcome1):
     expected_outcome0 = total_score * expected_outcome_ratio0
     expected_outcome1 = total_score * expected_outcome_ratio1
 
-    updated_elo0 = elo0 + K_FACTOR * (actual_outcome0 - expected_outcome0)
-    updated_elo1 = elo1 + K_FACTOR * (actual_outcome1 - expected_outcome1)
+    updated_elo0 = elo0 + k_factor * (actual_outcome0 - expected_outcome0)
+    updated_elo1 = elo1 + k_factor * (actual_outcome1 - expected_outcome1)
 
     return updated_elo0, updated_elo1
 
