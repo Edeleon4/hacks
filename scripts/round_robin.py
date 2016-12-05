@@ -8,7 +8,9 @@ STARTS_PER_PLAYER = 1000
 PLAYERS = (
     lib.players.random,
     lib.players.bota_flaca,
-    lib.players.bota_gorda
+    lib.players.bota_gorda,
+    lib.players.double,
+    lib.players.not_double
 )
 
 INITIAL_ELO = 1500

@@ -10,3 +10,9 @@ def bota_flaca(game):
 
 def bota_gorda(game):
     return list(reversed(bota_flaca(game)))
+
+def double(game):
+    return sorted(game.valid_moves, key=lambda m: m[0].first != m[0].second)
+
+def not_double(game):
+    return list(reversed(double(game)))
