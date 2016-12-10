@@ -14,6 +14,7 @@ PLAYERS = (
     lib.players.bota_gorda,
     lib.players.double,
     lib.players.match,
+    lib.players.attack,
     lib.players.double_bota_gorda
 )
 
