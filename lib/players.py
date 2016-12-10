@@ -9,6 +9,19 @@ def _players(starting_player):
         yield player
         player = (player + 1) % 4
 
+def _missing(game):
+    missing = [set() for player in range(4)]
+    board = dominoes.SkinnyBoard()
+    for player, move in zip(_players(game.starting_player), game.moves):
+        if move is None:
+            missing[player].update([board.left_end(), board.right_end()])
+        elif move[1]:
+            board.add_left(move[0])
+        else:
+            board.add_right(move[0])
+
+    return missing
+
 def random(game):
     game.valid_moves = tuple(sorted(game.valid_moves, key=lambda _: rand.random()))
 
@@ -41,24 +54,10 @@ def not_match(game):
     game.valid_moves = tuple(reversed(game.valid_moves))
 
 def attack(game):
-    missing = [set() for player in range(4)]
-    board = dominoes.SkinnyBoard()
-    for player, move in zip(_players(game.starting_player), game.moves):
-        if move is None:
-            missing[player].update([board.left_end(), board.right_end()])
-        elif move[1]:
-            board.add_left(move[0])
-        else:
-            board.add_right(move[0])
-
+    missing = _missing(game)
     next_player_maybe_has = set(range(7)) - missing[(game.turn + 1) % 4]
     def num_options(move):
-        if board:
-            board_copy = dominoes.SkinnyBoard(board.left_end(),
-                                              board.right_end(),
-                                              len(board))
-        else:
-            board_copy = dominoes.SkinnyBoard()
+        board_copy = dominoes.SkinnyBoard.from_board(game.board)
 
         if move[1]:
             board_copy.add_left(move[0])
@@ -69,6 +68,10 @@ def attack(game):
         return len(next_player_maybe_has & ends)
 
     game.valid_moves = tuple(sorted(game.valid_moves, key=num_options))
+
+def not_attack(game):
+     attack(game)
+     game.valid_moves = tuple(reversed(game.valid_moves))
 
 def double_bota_gorda(game):
     bota_gorda(game)
