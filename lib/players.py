@@ -73,8 +73,9 @@ def not_attack(game):
      attack(game)
      game.valid_moves = tuple(reversed(game.valid_moves))
 
-def double_bota_gorda(game):
+def double_attack_bota_gorda(game):
     bota_gorda(game)
+    attack(game)
     double(game)
 
 def omniscient(game):
