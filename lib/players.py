@@ -16,13 +16,15 @@ def bota_flaca(game):
     game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first + m[0].second))
 
 def bota_gorda(game):
-    game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -m[0].first - m[0].second))
+    bota_flaca(game)
+    game.valid_moves = tuple(reversed(game.valid_moves))
 
 def double(game):
     game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first != m[0].second))
 
 def not_double(game):
-    game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first == m[0].second))
+    double(game)
+    game.valid_moves = tuple(reversed(game.valid_moves))
 
 def match(game):
     try:
@@ -35,14 +37,8 @@ def match(game):
     game.valid_moves = tuple(sorted(game.valid_moves, key=not_move_matches))
 
 def not_match(game):
-    try:
-        left_end = game.board.left_end()
-        right_end = game.board.right_end()
-    except dominoes.EmptyBoardException:
-        return
-
-    move_matches = lambda m: tuple(m[0]) in [(left_end, right_end), (right_end, left_end)]
-    game.valid_moves = tuple(sorted(game.valid_moves, key=move_matches))
+    match(game)
+    game.valid_moves = tuple(reversed(game.valid_moves))
 
 def attack(game):
     missing = [set() for player in range(4)]
