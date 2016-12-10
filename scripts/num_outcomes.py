@@ -3,9 +3,8 @@ import dominoes
 import multiprocessing
 import time
 
-FIXED_MOVES = 4
-SERIAL_DEPTH = 5
-NUM_PROCESSES = 4
+FIXED_MOVES = 0
+SERIAL_DEPTH = 8
 CHUNK_SIZE = 2
 
 def make_moves(game):
@@ -49,7 +48,7 @@ games = bfs(game, SERIAL_DEPTH)
 
 # calculate number of outcomes in parallel
 start = time.time()
-with multiprocessing.Pool(NUM_PROCESSES) as pool:
+with multiprocessing.Pool() as pool:
     total_outcomes = 0
     #for i, outcomes in enumerate(map(num_outcomes, games)):
     for i, outcomes in enumerate(pool.imap_unordered(num_outcomes, games, CHUNK_SIZE)):
