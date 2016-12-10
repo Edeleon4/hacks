@@ -13,7 +13,6 @@ PLAYERS = (
     lib.players.random,
     lib.players.bota_gorda,
     lib.players.double,
-    lib.players.match,
     lib.players.attack,
     lib.players.double_bota_gorda
 )
@@ -93,8 +92,9 @@ for _ in tqdm.trange(STARTS_PER_PLAYER, leave=False):
 
 # print out win/loss records
 print('Records:')
-records = sorted(RECORDS.items(), key=lambda pairing_record: pairing_record[1][1])
-for ((player0, player2), (player1, player3)), record in records:
+for pairing in PAIRINGS:
+    (player0, player2), (player1, player3) = pairing
+    record = RECORDS[pairing]
     print('   ({}, {}) vs ({}, {}): {}'.format(player0.__name__, player2.__name__,
                                                player1.__name__, player3.__name__, record))
 
