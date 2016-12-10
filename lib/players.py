@@ -1,4 +1,5 @@
 import copy
+import dominoes
 import lib.search
 import random as rand
 
@@ -16,6 +17,26 @@ def double(game):
 
 def not_double(game):
     game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: m[0].first == m[0].second))
+
+def match(game):
+    try:
+        left_end = game.board.left_end()
+        right_end = game.board.right_end()
+    except dominoes.EmptyBoardException:
+        return
+
+    not_move_matches = lambda m: tuple(m[0]) not in [(left_end, right_end), (right_end, left_end)]
+    game.valid_moves = tuple(sorted(game.valid_moves, key=not_move_matches))
+
+def not_match(game):
+    try:
+        left_end = game.board.left_end()
+        right_end = game.board.right_end()
+    except dominoes.EmptyBoardException:
+        return
+
+    move_matches = lambda m: tuple(m[0]) in [(left_end, right_end), (right_end, left_end)]
+    game.valid_moves = tuple(sorted(game.valid_moves, key=move_matches))
 
 def double_bota_gorda(game):
     bota_gorda(game)

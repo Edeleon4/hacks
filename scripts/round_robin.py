@@ -13,6 +13,7 @@ PLAYERS = (
     lib.players.random,
     lib.players.bota_gorda,
     lib.players.double,
+    lib.players.match,
     lib.players.double_bota_gorda
 )
 
