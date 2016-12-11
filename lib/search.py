@@ -1,6 +1,16 @@
 import copy
+import dominoes
+import lib.utils as utils
 import multiprocessing
 import operator
+
+def all_possible_hands(game):
+    other_hands = tuple(h for p, h in enumerate(game.hands) if p != game.turn)
+    other_dominoes = tuple(d for h in other_hands for d in h)
+    other_hand_sizes = tuple(len(h) for h in other_hands)
+
+    for hands in utils.partitions(other_dominoes, other_hand_sizes):
+        yield tuple(dominoes.Hand(h) for h in hands)
 
 def make_moves(game, key=None):
     sorted_moves = sorted(game.valid_moves, key=key)

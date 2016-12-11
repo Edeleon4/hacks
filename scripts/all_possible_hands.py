@@ -1,17 +1,10 @@
 import dominoes
+import lib.search as search
 import lib.utils as utils
 
 FIXED_MOVES = 10
 
 print('FIXED_MOVES:', FIXED_MOVES)
-
-def all_possible_hands(game):
-    other_hands = tuple(h for p, h in enumerate(game.hands) if p != game.turn)
-    other_dominoes = tuple(d for h in other_hands for d in h)
-    other_hand_sizes = tuple(len(h) for h in other_hands)
-
-    for hands in utils.partitions(other_dominoes, other_hand_sizes):
-        yield tuple(dominoes.Hand(h) for h in hands)
 
 # initialize random game
 game = dominoes.Game.new()
@@ -28,7 +21,7 @@ expected_count = utils.nCk(sum(other_hand_lengths), other_hand_lengths[0]) * \
 # count all possible hands
 with utils.timer() as t:
     count = 0
-    for _ in all_possible_hands(game):
+    for _ in search.all_possible_hands(game):
         count += 1
 
 assert count == expected_count, \
