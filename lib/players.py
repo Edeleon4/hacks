@@ -74,20 +74,23 @@ def not_attack(game):
      attack(game)
      game.valid_moves = tuple(reversed(game.valid_moves))
 
-def all_possible_hands(game):
-    if len(game.board) > 15 and len(game.valid_moves) > 1:
-        counter = collections.Counter()
-        for hands in lib.search.all_possible_hands(game, _missing(game)):
-            game_copy = copy.deepcopy(game)
-            other_players = [p for p in range(len(game.hands)) if p != game.turn]
-            for player, hand in zip(other_players, hands):
-                game_copy.hands[player] = hand
+def all_possible_hands_player(min_board_length):
+    def all_possible_hands(game):
+        if len(game.board) >= min_board_length and len(game.valid_moves) > 1:
+            counter = collections.Counter()
+            for hands in lib.search.all_possible_hands(game, _missing(game)):
+                game_copy = copy.deepcopy(game)
+                other_players = [p for p in range(len(game.hands)) if p != game.turn]
+                for player, hand in zip(other_players, hands):
+                    game_copy.hands[player] = hand
 
-            game_copy.skinny_board()
-            move = lib.search.alphabeta(game_copy, key=lambda m: m[0].first != m[0].second)[0][0]
-            counter.update([move])
+                game_copy.skinny_board()
+                move = lib.search.alphabeta(game_copy, key=lambda m: m[0].first != m[0].second)[0][0]
+                counter.update([move])
 
-        game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -counter[m]))
+            game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -counter[m]))
+
+    return all_possible_hands
 
 def double_attack_bota_gorda(game):
     bota_gorda(game)
