@@ -22,8 +22,13 @@ PLAYERS = (
     lib.players.bota_gorda,
     lib.players.double,
     lib.players.attack,
-#    lib.players.all_possible_hands_player(20),
-    lib.players.double_attack_bota_gorda,
+    lib.players.all_possible_hands(20),
+    lib.players.compose(
+        'double_attack_bota_gorda',
+        lib.players.bota_gorda,
+        lib.players.attack,
+        lib.players.double
+    )
 #    lib.players.all_possible_hands_double_attack_bota_gorda_player(8)
 )
 

@@ -106,10 +106,14 @@ class all_possible_hands:
 
             game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -counter[m]))
 
-def double_attack_bota_gorda(game):
-    bota_gorda(game)
-    attack(game)
-    double(game)
+class compose:
+    def __init__(self, name, *callables):
+        self.callables = callables
+        self.__name__ = name
+
+    def __call__(self, game):
+        for callable in self.callables:
+            callable(game)
 
 def all_possible_hands_double_attack_bota_gorda_player(min_board_length, num_processes=None):
     _all_possible_hands = all_possible_hands_player(min_board_length, num_processes=num_processes)
