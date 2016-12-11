@@ -90,7 +90,7 @@ def hands_alphabeta(args):
 class all_possible_hands:
     def __init__(self, min_board_length):
         self.min_board_length = min_board_length
-        self.__name__ = 'all_possible_hands'
+        self.__name__ = type(self).__name__
 
     def __call__(self, game):
         if len(game.board) >= self.min_board_length and len(game.valid_moves) > 1:
