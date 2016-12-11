@@ -2,14 +2,19 @@ import dominoes
 import itertools
 import lib.elo
 import lib.players
+import multiprocessing
 import tqdm
 
 # each pair of teams will play each other
 # STARTS_PER_PLAYER times for each of the four players
-STARTS_PER_PLAYER = 25
+STARTS_PER_PLAYER = 250
 
 # number of moves to play at random, at the start of each game
 FIXED_MOVES = 0
+
+# number of processes to use for the round robin.
+# if None, uses as many processes as there are processors.
+NUM_PROCESSES = None
 
 # playing strateges to play in the round robin
 PLAYERS = (
@@ -17,9 +22,9 @@ PLAYERS = (
     lib.players.bota_gorda,
     lib.players.double,
     lib.players.attack,
-    lib.players.all_possible_hands_player(20),
+#    lib.players.all_possible_hands_player(20),
     lib.players.double_attack_bota_gorda,
-    lib.players.all_possible_hands_double_attack_bota_gorda_player(20)
+#    lib.players.all_possible_hands_double_attack_bota_gorda_player(8)
 )
 
 # Elo rating of each team at the start of the round robin
@@ -40,6 +45,7 @@ RECORDS = {pairing: [0, 0] for pairing in PAIRINGS}
 # print config info
 print('STARTS_PER_PLAYER:', STARTS_PER_PLAYER)
 print('FIXED_MOVES:', FIXED_MOVES)
+print('NUM_PROCESSES:', NUM_PROCESSES)
 print('PLAYERS:')
 for player in PLAYERS:
     print('    {}'.format(player.__name__))
@@ -51,7 +57,9 @@ print()
 
 # play a single game subject to each player's
 # strategy and a given starting player
-def play_game(team0, team1, starting_player):
+def play_game(args):
+    team0, team1, starting_player = args
+
     # playing order
     players = (
         team0[0],
@@ -88,19 +96,23 @@ def play_game(team0, team1, starting_player):
 
         return outcome
 
-for _ in tqdm.trange(STARTS_PER_PLAYER, leave=False):
-    for starting_player in range(4):
-        for team0, team1 in PAIRINGS:
-            # play game
-            score0, score1 = play_game(team0, team1, starting_player)
+def play_game_args():
+    for _ in range(STARTS_PER_PLAYER):
+        for starting_player in range(4):
+            for team0, team1 in PAIRINGS:
+                yield team0, team1, starting_player
 
-            # update win/loss records
-            RECORDS[(team0, team1)][0] += score0
-            RECORDS[(team0, team1)][1] += score1
+with multiprocessing.Pool(NUM_PROCESSES) as pool:
+    for (team0, team1, _), (score0, score1) in tqdm.tqdm(zip(play_game_args(),
+                                                             pool.imap(play_game, play_game_args())),
+                                                         total=len(list(play_game_args()))):
+        # update win/loss records
+        RECORDS[(team0, team1)][0] += score0
+        RECORDS[(team0, team1)][1] += score1
 
-            # update Elo ratings
-            ELO[team0], ELO[team1] = lib.elo.update(ELO[team0], ELO[team1],
-                                                    score0, score1)
+        # update Elo ratings
+        ELO[team0], ELO[team1] = lib.elo.update(ELO[team0], ELO[team1],
+                                                score0, score1)
 
 # print out win/loss records
 print('Records:')
