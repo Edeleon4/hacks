@@ -66,6 +66,23 @@ for (player0, player1) in TEAMS:
     print('    ({}, {})'.format(player0.__name__, player1.__name__))
 print()
 
+def new_game(*args, **kwargs):
+    while True:
+        # initialize random game
+        game = dominoes.Game.new(*args, **kwargs)
+
+        # play moves at random
+        for _ in range(FIXED_MOVES):
+            game.make_move(*game.valid_moves[0])
+
+            # make sure that the moves played at random did not end the game
+            if game.result is not None:
+                break
+
+        # make sure that the moves played at random did not end the game
+        if game.result is None:
+            return game
+
 # play a single game subject to each player's
 # strategy and a given starting player
 def play_game(args):
@@ -79,12 +96,7 @@ def play_game(args):
         team1[1]
     )
 
-    # initialize random game
-    game = dominoes.Game.new(starting_player=starting_player)
-
-    # play moves at random
-    for _ in range(FIXED_MOVES):
-        game.make_move(*game.valid_moves[0])
+    game = new_game(starting_player=starting_player)
 
     # play the rest of the game
     while game.result is None:

@@ -88,8 +88,9 @@ def hands_alphabeta(args):
     return lib.search.alphabeta(game, key=lambda m: m[0].first != m[0].second)[0][0]
 
 class all_possible_hands:
-    def __init__(self, min_board_length):
+    def __init__(self, min_board_length, sample_size):
         self.min_board_length = min_board_length
+        self.sample_size = sample_size
         self.__name__ = type(self).__name__
 
     def __call__(self, game):
@@ -97,7 +98,7 @@ class all_possible_hands:
             counter = collections.Counter()
             hands = list(lib.search.all_possible_hands(game, _missing(game)))
             try:
-                hands = rand.sample(hands, 100)
+                hands = rand.sample(hands, self.sample_size)
             except ValueError:
                 pass
 
