@@ -14,8 +14,9 @@ PLAYERS = (
     lib.players.bota_gorda,
     lib.players.double,
     lib.players.attack,
-    lib.players.all_possible_hands_player(16),
-    lib.players.double_attack_bota_gorda
+    lib.players.all_possible_hands_player(20),
+    lib.players.double_attack_bota_gorda,
+    lib.players.all_possible_hands_double_attack_bota_gorda_player(20)
 )
 
 # Elo rating of each team at the start of the round robin
