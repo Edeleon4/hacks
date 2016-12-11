@@ -78,6 +78,7 @@ def not_attack(game):
 
 def hands_alphabeta(args):
     game, hands = args
+    game = copy.deepcopy(game)
     other_players = [p for p in range(len(game.hands)) if p != game.turn]
     for player, hand in zip(other_players, hands):
         game.hands[player] = hand
@@ -86,9 +87,13 @@ def hands_alphabeta(args):
 
     return lib.search.alphabeta(game, key=lambda m: m[0].first != m[0].second)[0][0]
 
-def all_possible_hands_player(min_board_length, num_processes=None):
-    def all_possible_hands(game):
-        if len(game.board) >= min_board_length and len(game.valid_moves) > 1:
+class all_possible_hands:
+    def __init__(self, min_board_length):
+        self.min_board_length = min_board_length
+        self.__name__ = 'all_possible_hands'
+
+    def __call__(self, game):
+        if len(game.board) >= self.min_board_length and len(game.valid_moves) > 1:
             counter = collections.Counter()
             hands = list(lib.search.all_possible_hands(game, _missing(game)))
             try:
@@ -96,13 +101,10 @@ def all_possible_hands_player(min_board_length, num_processes=None):
             except ValueError:
                 pass
 
-            with multiprocessing.Pool(num_processes) as pool:
-                for move in pool.imap_unordered(hands_alphabeta, ((game, h) for h in hands)):
-                    counter.update([move])
+            for move in map(hands_alphabeta, ((game, h) for h in hands)):
+                counter.update([move])
 
             game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -counter[m]))
-
-    return all_possible_hands
 
 def double_attack_bota_gorda(game):
     bota_gorda(game)
