@@ -115,14 +115,6 @@ class compose:
         for callable in self.callables:
             callable(game)
 
-def all_possible_hands_double_attack_bota_gorda_player(min_board_length, num_processes=None):
-    _all_possible_hands = all_possible_hands_player(min_board_length, num_processes=num_processes)
-    def all_possible_hands_double_attack_bota_gorda(game):
-        double_attack_bota_gorda(game)
-        _all_possible_hands(game)
-
-    return all_possible_hands_double_attack_bota_gorda
-
 def omniscient(game):
     game_copy = copy.deepcopy(game)
     game_copy.skinny_board()
