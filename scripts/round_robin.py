@@ -34,7 +34,7 @@ PLAYERS = (
         lib.players.bota_gorda,
         lib.players.attack,
         lib.players.double,
-        lib.players.all_possible_hands(20)
+        lib.players.all_possible_hands(20, 50)
     )
 )
 
