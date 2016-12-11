@@ -6,7 +6,7 @@ import tqdm
 
 # each pair of teams will play each other
 # STARTS_PER_PLAYER times for each of the four players
-STARTS_PER_PLAYER = 1250
+STARTS_PER_PLAYER = 25
 
 # playing strateges to play in the round robin
 PLAYERS = (
@@ -14,6 +14,7 @@ PLAYERS = (
     lib.players.bota_gorda,
     lib.players.double,
     lib.players.attack,
+    lib.players.all_possible_hands,
     lib.players.double_attack_bota_gorda
 )
 
