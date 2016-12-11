@@ -1,7 +1,9 @@
 import collections
 import copy
 import dominoes
+import itertools
 import lib.search
+import multiprocessing
 import random as rand
 
 def _players(starting_player):
@@ -74,19 +76,25 @@ def not_attack(game):
      attack(game)
      game.valid_moves = tuple(reversed(game.valid_moves))
 
-def all_possible_hands_player(min_board_length):
+def hands_alphabeta(args):
+    game, hands = args
+    other_players = [p for p in range(len(game.hands)) if p != game.turn]
+    for player, hand in zip(other_players, hands):
+        game.hands[player] = hand
+
+    game.skinny_board()
+
+    return lib.search.alphabeta(game, key=lambda m: m[0].first != m[0].second)[0][0]
+
+def all_possible_hands_player(min_board_length, num_processes=None):
     def all_possible_hands(game):
         if len(game.board) >= min_board_length and len(game.valid_moves) > 1:
             counter = collections.Counter()
-            for hands in lib.search.all_possible_hands(game, _missing(game)):
-                game_copy = copy.deepcopy(game)
-                other_players = [p for p in range(len(game.hands)) if p != game.turn]
-                for player, hand in zip(other_players, hands):
-                    game_copy.hands[player] = hand
-
-                game_copy.skinny_board()
-                move = lib.search.alphabeta(game_copy, key=lambda m: m[0].first != m[0].second)[0][0]
-                counter.update([move])
+            args = zip(itertools.repeat(game),
+                       lib.search.all_possible_hands(game, _missing(game)))
+            with multiprocessing.Pool(num_processes) as pool:
+                for move in pool.imap_unordered(hands_alphabeta, args):
+                    counter.update([move])
 
             game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -counter[m]))
 
