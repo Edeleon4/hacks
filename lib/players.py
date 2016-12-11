@@ -90,10 +90,14 @@ def all_possible_hands_player(min_board_length, num_processes=None):
     def all_possible_hands(game):
         if len(game.board) >= min_board_length and len(game.valid_moves) > 1:
             counter = collections.Counter()
-            args = zip(itertools.repeat(game),
-                       lib.search.all_possible_hands(game, _missing(game)))
+            hands = list(lib.search.all_possible_hands(game, _missing(game)))
+            try:
+                hands = rand.sample(hands, 100)
+            except ValueError:
+                pass
+
             with multiprocessing.Pool(num_processes) as pool:
-                for move in pool.imap_unordered(hands_alphabeta, args):
+                for move in pool.imap_unordered(hands_alphabeta, ((game, h) for h in hands)):
                     counter.update([move])
 
             game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -counter[m]))
