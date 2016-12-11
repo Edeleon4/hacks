@@ -8,6 +8,9 @@ import tqdm
 # STARTS_PER_PLAYER times for each of the four players
 STARTS_PER_PLAYER = 25
 
+# number of moves to play at random, at the start of each game
+FIXED_MOVES = 0
+
 # playing strateges to play in the round robin
 PLAYERS = (
     lib.players.random,
@@ -36,6 +39,7 @@ RECORDS = {pairing: [0, 0] for pairing in PAIRINGS}
 
 # print config info
 print('STARTS_PER_PLAYER:', STARTS_PER_PLAYER)
+print('FIXED_MOVES:', FIXED_MOVES)
 print('PLAYERS:')
 for player in PLAYERS:
     print('    {}'.format(player.__name__))
@@ -56,8 +60,14 @@ def play_game(team0, team1, starting_player):
         team1[1]
     )
 
-    # play the game
+    # initialize random game
     game = dominoes.Game.new(starting_player=starting_player)
+
+    # play moves at random
+    for _ in range(FIXED_MOVES):
+        game.make_move(*game.valid_moves[0])
+
+    # play the rest of the game
     while game.result is None:
         # each player's strategy function reorders
         # game.valid_moves in order of preference
