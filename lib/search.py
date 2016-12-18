@@ -148,3 +148,20 @@ def parallel_alphabeta(game, serial_depth, num_processes=None, chunk_size=1):
         num_processes=num_processes,
         chunk_size=chunk_size
     )
+def monte_carlo_score(game, move, player, n=1000):
+    game = copy.deepcopy(game)
+    current = game.turn
+    if game.result:
+        return game.result.points
+    game.make_move(*move)
+    score = 0
+    for i in range(n):
+        this_game = copy.deepcopy(game)
+        while not this_game.result:
+            player(this_game)
+            this_game.make_move(*this_game.valid_moves[0])
+        if this_game.result.won or this_game.result.player%2 == current%2:
+            score += this_game.result.points
+
+    return score/float(n)
+

@@ -107,6 +107,12 @@ class all_possible_hands:
 
             game.valid_moves = tuple(sorted(game.valid_moves, key=lambda m: -counter[m]))
 
+def monte_carlo_random(game):
+    game = copy.deepcopy(game)
+    monte_carlo_weight = lambda move : -lib.search.monte_carlo_score(game,
+            move, random, 100)
+    game.valid_moves = tuple(sorted(game.valid_moves, key=monte_carlo_weight))
+
 class compose:
     def __init__(self, name, *callables):
         self.callables = callables

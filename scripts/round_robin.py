@@ -14,7 +14,7 @@ FIXED_MOVES = 0
 
 # number of processes to use for the round robin.
 # if None, uses as many processes as there are processors.
-NUM_PROCESSES = None
+NUM_PROCESSES = 1
 
 # playing strateges to play in the round robin
 PLAYERS = (
@@ -22,7 +22,7 @@ PLAYERS = (
     lib.players.bota_gorda,
     lib.players.double,
     lib.players.attack,
-    lib.players.all_possible_hands(20),
+    lib.players.monte_carlo_random,
     lib.players.compose(
         'double_attack_bota_gorda',
         lib.players.bota_gorda,
@@ -30,11 +30,9 @@ PLAYERS = (
         lib.players.double
     ),
     lib.players.compose(
-        'all_possible_hands_double_attack_bota_gorda',
         lib.players.bota_gorda,
         lib.players.attack,
         lib.players.double,
-        lib.players.all_possible_hands(20, 50)
     )
 )
 
