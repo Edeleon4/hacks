@@ -30,6 +30,7 @@ PLAYERS = (
         lib.players.double
     ),
     lib.players.compose(
+        'botagorda_attack_double',
         lib.players.bota_gorda,
         lib.players.attack,
         lib.players.double,
